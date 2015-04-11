@@ -6,10 +6,13 @@ public class InteractiveObject : MonoBehaviour
 
     public string interactionContainerTag;
     protected bool used;
+    private bool longUsed;
 
     void Awake()
     {
         used = false;
+        interactionContainerTag = "ObjectInteractor";
+        longUsed = false;
     }
 
 	void OnTriggerEnter2D(Collider2D otherObject) 
@@ -29,7 +32,7 @@ public class InteractiveObject : MonoBehaviour
 	    {
 	        if (otherObject.tag == interactionContainerTag)
 	        {
-	            onEndCollide();
+	            onExitCollide();
 	        }
 	    }
 	}
@@ -37,24 +40,42 @@ public class InteractiveObject : MonoBehaviour
 	void  OnTriggerStay2D(Collider2D otherObject)
 	{
 	    if (!Global.isPaused())
-	    {
-	        if (otherObject.name == interactionContainerTag)
-	        {
+	    {           
+            if (otherObject.tag == interactionContainerTag)
+            {              
 	            onCollide();
-	        }
+
+                if (Input.GetButtonUp("Use") && longUsed == false)
+                    onUse();
+                else if (Input.GetAxis("Use") == 1)
+                {
+                    longUsed = true;
+                    onLongUse();
+                }
+                else
+                {
+                    longUsed = false;
+                }
+            }
 	    }
 	}
 
-    protected void onEnterCollide()
+
+
+    protected virtual  void onEnterCollide()
+    {      
+    }
+
+    protected virtual void onCollide()
+    {}
+
+    protected virtual void onUse()
+    {}
+
+    protected virtual void onLongUse()
     { }
 
-    protected void onCollide()
-    {}
-
-    protected void onUse()
-    {}
-
-    protected void onEndCollide()
+    protected virtual void onExitCollide()
     {}
 
 }
