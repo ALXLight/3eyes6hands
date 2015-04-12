@@ -12,10 +12,15 @@ public class PlayerControls : MonoBehaviour {
 	public float hungerRaiseRate = 0.2f;
 	public int attackDamage = 10;
 	public float attackCooldown = 0.2f;
+    private float groundRadius = 0.3f;
 
+    public Transform floorCheckCollider;
+    public LayerMask whatIsFloor;
 
 	private Rigidbody2D rigidBody2D;
 //	private bool runActive = false;
+    private bool isOnFloor = false;
+    private bool isLookingRight = true;
 	
 	private Slider healthBar;
 	private Slider hungerBar;
@@ -32,65 +37,66 @@ public class PlayerControls : MonoBehaviour {
     // Update is called once per frame
 	void Update () 
 	{
-        if (!Global.isPaused())
-	    {
-	        Movement();
-	        Attack();
-	    }
-
+        //if (!Global.isPaused())
+        //{
+        //}
 	}
+
+    void FixedUpdate() 
+    {
+        if (!Global.isPaused())
+        {
+            floorCheck();
+            Attack();
+            Movement();
+        }
+    }
+
 
 	float getSpeed()
 	{
         if (Input.GetButton("Run"))
 		{
-			Debug.Log("shift");
 			return baseSpeed * 0.2f;
 		}
 		
 		return baseSpeed * 0.1f;	
 	}
-	
+
+    void floorCheck() 
+    {
+        isOnFloor = Physics2D.OverlapCircle(floorCheckCollider.position, groundRadius, whatIsFloor); 
+    }
+
 	void Movement ()
-	{			
-		
-		float forwardMovement = Input.GetAxis("Horizontal") ; 		
+	{
+        ////////////////ВЛЕВО/ВПРАВО///////////////
+        float forwardMovement = Input.GetAxis("Horizontal") ; 		
 		float speed = forwardMovement * getSpeed();
-	
-		rigidBody2D.velocity = new Vector2(speed, rigidBody2D.velocity.y);
-		
-		
-		if( forwardMovement > 0)
+
+        if (isOnFloor)//Ходим только по полу
+        {
+            rigidBody2D.velocity = new Vector2(speed, rigidBody2D.velocity.y);
+        }
+
+        ////////////////ПРЫЖОК/////////////////////
+		if(Input.GetButtonDown("Jump") && isOnFloor)
 		{
-			Quaternion tmpRotation = transform.rotation;
-			tmpRotation.y = 0;
-			transform.rotation = tmpRotation;
-			//animator.SetBool("walking", true);
+		    rigidBody2D.AddForce(new Vector2(0f, jumpAcceleration));  
 		}
-		else if(forwardMovement < 0)
-		{
-			Quaternion tmpRotation = transform.rotation;
-			tmpRotation.y = 180;
-			transform.rotation = tmpRotation;
-			//animator.SetBool("walking", true);
-		}
-		else
-		{
-			//animator.SetBool("walking", false);
-		}
-	
-		
-		
-		if(Input.GetButtonDown("Jump"))
-		{
-			rigidBody2D.AddForce(new Vector2(0f, jumpAcceleration));  
- 		   if(rigidBody2D.velocity.y > 1)
-           {
-               rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, 1);
-           }
-		}
+
+        ////////////////АНИМАЦИЯ///////////////////
+        if ((forwardMovement > 0 && !isLookingRight) || (forwardMovement < 0 && isLookingRight)) { TurnAnimation(); }
+        animator.SetBool("walking", speed != 0);
 	}
-	
+
+    void TurnAnimation()
+    {
+        isLookingRight = !isLookingRight;
+        Quaternion tmpRotation = transform.rotation;
+        tmpRotation.y = isLookingRight ? 0:180;
+        transform.rotation = tmpRotation;
+    }
 	
 	void Attack()
 	{
@@ -113,4 +119,6 @@ public class PlayerControls : MonoBehaviour {
 			attackTimer -= Time.deltaTime;
 		}*/
 	}
+
+    //void OnCo
 }
