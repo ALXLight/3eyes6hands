@@ -4,27 +4,28 @@ using System.Collections;
 
 
 public class PlayerControls : MonoBehaviour {
+    public float maxHealth = 100f;
+    public float maxHunger = 100f;
+    public float Health = 100f;
+    public float Hunger = 100f;
 
-	public float baseSpeed = 1f;
-	public float jumpAcceleration = 400f;
-	public float maxHealth = 100f;
-	public float maxHunger = 100f;
-	public float hungerRaiseRate = 0.2f;
-	public int attackDamage = 10;
-	public float attackCooldown = 0.2f;
-    private float groundRadius = 0.3f;
+	public float baseSpeed          = 1f;
+	public float jumpAcceleration   = 400f;
+	public float hungerRaiseRate    = 0.2f;
+	public int attackDamage         = 10;
+	public float attackCooldown     = 0.2f;
+    private float groundRadius      = 0.3f;
 
     public Transform floorCheckCollider;
     public LayerMask whatIsFloor;
+    public Slider HealthBar;
+    public Slider HungerBar;
+    public Collider2D attackCollider; 
 
 	private Rigidbody2D rigidBody2D;
-//	private bool runActive = false;
     private bool isOnFloor = false;
     private bool isLookingRight = true;
 	
-	private Slider healthBar;
-	private Slider hungerBar;
-	private Collider2D attackCollider; 
 	private float attackTimer;
 	private Animator animator;    
 
@@ -32,14 +33,19 @@ public class PlayerControls : MonoBehaviour {
     private void Awake()
     {
         rigidBody2D = GetComponent<Rigidbody2D>();
+        HealthBar.maxValue = maxHealth;
+        HungerBar.maxValue = maxHunger;
+        HealthBar.value = maxHealth;
+        HungerBar.value = maxHunger;
     }
 
     // Update is called once per frame
 	void Update () 
 	{
-        //if (!Global.isPaused())
-        //{
-        //}
+        if (!Global.isPaused())
+        {
+            HUD();
+        }
 	}
 
     void FixedUpdate() 
@@ -87,17 +93,28 @@ public class PlayerControls : MonoBehaviour {
 
         ////////////////АНИМАЦИЯ///////////////////
         if ((forwardMovement > 0 && !isLookingRight) || (forwardMovement < 0 && isLookingRight)) { TurnAnimation(); }
-        animator.SetBool("walking", speed != 0);
+        //animator.SetBool("walking", speed != 0);
 	}
 
     void TurnAnimation()
     {
         isLookingRight = !isLookingRight;
-        Quaternion tmpRotation = transform.rotation;
-        tmpRotation.y = isLookingRight ? 0:180;
-        transform.rotation = tmpRotation;
+        //Quaternion tmpRotation = transform.rotation;
+        //tmpRotation.y = isLookingRight ? 0:180;
+        //transform.rotation = tmpRotation;
+
+        Vector3 turnVector = transform.localScale;
+        turnVector.x *= -1;
+        transform.localScale = turnVector;
     }
-	
+
+    void HUD()
+    {
+        HealthBar.value     = Health;
+        HungerBar.maxValue  = Hunger;
+    }
+    
+
 	void Attack()
 	{
 	/*	if(attackTimer < 0)
