@@ -1,0 +1,14 @@
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\Assembly-CSharp.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\Assembly-CSharp.pdb
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\UnityEditor.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\UnityEditor.iOS.Extensions.Xcode.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\UnityEngine.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\UnityEngine.UI.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\Mono.Cecil.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\Unity.SerializationLogic.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\Unity.DataContract.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+E:\Games\3e6h\3eyes6hands\Temp\bin\Debug\Unity.CecilTools.dll
+E:\Games\3e6h\3eyes6hands\obj\Debug\Assembly-CSharp-vs.csprojResolveAssemblyReference.cache
+E:\Games\3e6h\3eyes6hands\obj\Debug\Assembly-CSharp.dll
+E:\Games\3e6h\3eyes6hands\obj\Debug\Assembly-CSharp.pdb
