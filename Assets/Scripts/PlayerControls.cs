@@ -8,10 +8,11 @@ public class PlayerControls : MonoBehaviour {
     public float Health = 100f;
     public float Hunger = 0f;
 
-	public float baseSpeed          = 1f;
+	public float baseSpeed          = 0.1f;
 	public float jumpAcceleration   = 400f;
-	public int attackDamage         = 10;
-	public float attackCooldown     = 0.2f;
+    private float runAcceleration   = 2f;
+    //public int attackDamage         = 10;
+    //public float attackCooldown     = 0.2f;
     private float groundRadius      = 0.3f;
 
     public Transform floorCheckCollider;
@@ -23,15 +24,16 @@ public class PlayerControls : MonoBehaviour {
 	private Rigidbody2D rigidBody2D;
     private bool isOnFloor = false;
     private bool isLookingRight = true;
-	
+    private bool isRunning = false;
+
 	private float attackTimer;
 	private Animator animator;    
 
     //Стоимость действий
    	public  float normalHungerRaiseRate    = 0.2f;
    	private float currentHungerRaiseRate;
-    private float jumpCost      = 10f;  //За прыжок
-    private float runRateCost   = 1.2f; //Увеличиваем currentHungerRaiseRate в 1.2 раза
+    private float jumpCost  = 10f;      //За прыжок
+    private float runCost   = 0.1f;    //Увеличивается каждые пять кадров, поэтому значение небольшое
 
 
     //////////////////СОБЫТИЯ ДВИЖКА//////////////////////////
@@ -69,16 +71,6 @@ public class PlayerControls : MonoBehaviour {
     }
 
     //////////////////ПЕРЕДВИЖЕНИЕ////////////////////////////
-	float getSpeed()
-	{
-        if (Input.GetButton("Run"))
-		{
-			return baseSpeed * 0.2f;
-		}
-		
-		return baseSpeed * 0.1f;	
-	}
-
     void floorCheck() 
     {
         isOnFloor = Physics2D.OverlapCircle(floorCheckCollider.position, groundRadius, whatIsFloor); 
@@ -112,13 +104,18 @@ public class PlayerControls : MonoBehaviour {
     }
 
     void Walking(float forwardMovement) {
-        float speed = forwardMovement * getSpeed();
-
+        isRunning = (isOnFloor && forwardMovement != 0 && Input.GetButton("Run") && CheckHunger(runCost));
+        
         if (isOnFloor)//Ходим только по полу
         {
+            float speed = forwardMovement * baseSpeed * ((isRunning) ? runAcceleration : 1);
             rigidBody2D.velocity = new Vector2(speed, rigidBody2D.velocity.y);
         }
 
+        if (isRunning)
+        {
+            IncHunger(runCost);
+        }
         //animator.SetBool("walking", speed != 0);
     }
 
@@ -153,7 +150,7 @@ public class PlayerControls : MonoBehaviour {
 
     IEnumerator hungerRaiser()
     {
-        print("ололо");
+        //print("ололо");
         while (!Global.isPaused())
         {
             IncHunger(currentHungerRaiseRate);
