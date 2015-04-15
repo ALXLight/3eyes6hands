@@ -32,9 +32,10 @@ public class PlayerControls : MonoBehaviour {
     //Стоимость действий
    	public  float normalHungerRaiseRate    = 0.2f;
    	private float currentHungerRaiseRate;
-    private float jumpCost  = 10f;      //За прыжок
+    private float jumpCost  = 10f;     //За прыжок
     private float runCost   = 0.1f;    //Увеличивается каждые пять кадров, поэтому значение небольшое
-
+    private float regenCost = 0.8f;    //За единицу здоровья
+    private float regenRate = 0.001f;   
 
     //////////////////СОБЫТИЯ ДВИЖКА//////////////////////////
 
@@ -67,6 +68,7 @@ public class PlayerControls : MonoBehaviour {
             floorCheck();
             Attack();
             Movement();
+            Regeneration();
         }
     }
 
@@ -162,21 +164,40 @@ public class PlayerControls : MonoBehaviour {
         return (Hunger + Cost <= maxHunger);
     }
 
-    void IncHunger(float Cost)
+    void IncParam(ref float Param, float maxParam, float Increment)
     {
-        float incResult = Hunger + Cost;
-        
-        if (incResult > maxHunger)
+        float incResult = Param + Increment;
+
+        if (incResult > maxParam)
         {
-            incResult = maxHunger;
+            incResult = maxParam;
         }
-        else if (incResult<0)
+        else if (incResult < 0)
         {
             incResult = 0;
         }
 
-        Hunger = incResult;
+        Param = incResult;
+    }
+
+    void IncHunger(float Cost)
+    {
+        IncParam(ref Hunger, maxHunger, Cost);
+    }
+
+    void IncHealth(float HealthPoint)
+    {
+        IncParam(ref Health, maxHealth, HealthPoint);
     }
 
 
+    void Regeneration()
+    {
+        if (Health < maxHealth && Hunger < maxHunger)
+        {
+            float regenPoint = (maxHunger - Hunger) * regenRate; // Вот где-то тут може получиться немного халявной регенерации на остатках шкалы голода. Думаю, це нестрашно
+            IncHealth(regenPoint);
+            IncHunger(regenPoint*regenCost);
+        }
+    }
 }
