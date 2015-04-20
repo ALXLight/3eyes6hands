@@ -4,15 +4,19 @@ using System.Collections;
 public class InteractiveObject : MonoBehaviour
 {
 
-    public string interactionContainerTag;
-    protected bool used;
-    private bool longUsed;
+    public string interactionContainerTag = "ObjectInteractor";
+    protected bool used = false;
+    private bool longUsed = false;
+    protected ObjectTexts objectTexts = new ObjectTexts();
 
-    void Awake()
+    protected virtual void Awake()
     {
-        used = false;
-        interactionContainerTag = "ObjectInteractor";
-        longUsed = false;
+      //  used = false;
+      //  longUsed = false;
+        objectTexts.tryLoadData(name);
+
+       // Debug.Log("piu" + name);
+        //if()
     }
 
 	void OnTriggerEnter2D(Collider2D otherObject) 
