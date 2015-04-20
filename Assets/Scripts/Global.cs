@@ -36,8 +36,13 @@ public class Global : MonoBehaviour
     }
     // for menu pause on and off
     public static void pause(bool setPause = true)
-    {
+    {       
         Pause = setPause;
+
+        if (Pause)
+            Time.timeScale = 0;
+        else
+            Time.timeScale = 1;
     }
 
     public static bool isPaused()
@@ -49,7 +54,7 @@ public class Global : MonoBehaviour
     {
         if (Input.GetButtonDown("Pause"))
         {
-            Pause = !Pause;
+            pause(!isPaused());
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerControls : MonoBehaviour {
     public float maxHealth = 100f;
@@ -25,6 +26,7 @@ public class PlayerControls : MonoBehaviour {
     private bool isOnFloor = false;
     private bool isLookingRight = true;
     private bool isRunning = false;
+    private bool isEights = false;
 
 	private float attackTimer;
 	private Animator animator;    
@@ -35,13 +37,20 @@ public class PlayerControls : MonoBehaviour {
     private float jumpCost  = 10f;     //За прыжок
     private float runCost   = 0.1f;    //Увеличивается каждые пять кадров, поэтому значение небольшое
     private float regenCost = 0.8f;    //За единицу здоровья
-    private float regenRate = 0.001f;   
+    private float regenRate = 0.001f;
+    private float maxHungerDmg = 0.00001f; //Урон получаемый при макимуме голода  
+
+    private Dictionary<string, Transform> colliderDictionary;
 
     //////////////////СОБЫТИЯ ДВИЖКА//////////////////////////
 
 	// Use this for initialization
     private void Awake()
     {
+        colliderDictionary = new Dictionary<string, Transform>();
+        //colliderDictionary.Add("ололо","НЛО");
+        //print(colliderDictionary["ололо"]);
+
         rigidBody2D = GetComponent<Rigidbody2D>();
         HealthBar.maxValue = maxHealth;
         HungerBar.maxValue = maxHunger;
@@ -64,7 +73,7 @@ public class PlayerControls : MonoBehaviour {
     {
         if (!Global.isPaused())
         {
-            //print(Time.fixedDeltaTime);
+            EightsOrStanding();
             floorCheck();
             Attack();
             Movement();
@@ -120,6 +129,16 @@ public class PlayerControls : MonoBehaviour {
         }
         //animator.SetBool("walking", speed != 0);
     }
+
+    void EightsOrStanding()
+    {
+        if (Input.GetButtonUp("Eights"))
+        {
+            isEights = !isEights;
+            print(isEights);
+        }  
+    }
+
 
     void Attack()
     {
@@ -198,6 +217,10 @@ public class PlayerControls : MonoBehaviour {
             float regenPoint = (maxHunger - Hunger) * regenRate; // Вот где-то тут може получиться немного халявной регенерации на остатках шкалы голода. Думаю, це нестрашно
             IncHealth(regenPoint);
             IncHunger(regenPoint*regenCost);
+        }
+
+        if (Hunger == maxHunger) {
+            IncHealth(-maxHungerDmg);
         }
     }
 }
