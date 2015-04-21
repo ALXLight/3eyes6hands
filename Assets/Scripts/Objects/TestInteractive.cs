@@ -7,10 +7,10 @@ using System.Collections;
 public class TestInteractive : InteractiveObject
 {
 
-    void Awake()
+    /*override*/ void Awake()
     {
         base.Awake();
-        Debug.Log("Global");
+  
         /*
         otc.addMessage("msg1");
         otc.addMessage("msg2");
@@ -27,7 +27,7 @@ public class TestInteractive : InteractiveObject
 
     protected override void onEnterCollide()
     {
-      //  Debug.Log("collision");
+
     }
     protected override void onCollide()
     {
@@ -41,7 +41,7 @@ public class TestInteractive : InteractiveObject
 
     protected override void onUse()
     {
-        Debug.Log("use");
+    //    Debug.Log("use");
 
         //Debug.Log(texts["level1"]["testdoc"].message());
        // Debug.Log(texts["level1"].message());
