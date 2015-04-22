@@ -11,12 +11,8 @@ public class InteractiveObject : MonoBehaviour
 
     protected virtual void Awake()
     {
-      //  used = false;
-      //  longUsed = false;
         objectTexts.tryLoadData(name);
 
-       // Debug.Log("piu" + name);
-        //if()
     }
 
 	void OnTriggerEnter2D(Collider2D otherObject) 

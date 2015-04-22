@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class MessageDisplay : MonoBehaviour
 
 	void Awake ()
 	{
+
 	    if (TextObjectName != "")
 	    {
             messageTextField = GameObject.Find(TextObjectName).GetComponent<Text>();
@@ -17,26 +19,34 @@ public class MessageDisplay : MonoBehaviour
 	    pausedByText = false;
 	}
 
+    public static MessageDisplay getMessageDisplay(string name)
+    {
+        try
+        {
+            return GameObject.Find(name).GetComponent<Text>().GetComponent<MessageDisplay>();
+        }
+        catch (Exception)
+        {
+            Debug.LogError("Incorrect getMessageDisplay name: " + name);
+            return null;
+        }
+    }
+
     public void setText(string text)
     {
         messageTextField.text = text;
     }
 
-    public IEnumerator setTextForTime(string text, float secsShown)
+    public void setTextForTime(string text, float secsShown)
     {
-        messageTextField.text = text;
-        yield return new WaitForSeconds(secsShown);
-        //print(Time.time);
-        clear();
+        messageTextField.text = text;               
+        Invoke("clear", secsShown);
     }
 
     public void setTextPaused(string text)
     {
         messageTextField.text = text;
-        
-        Debug.Log("pause here");
-
-        clear();
+        Global.waitForAnyKey(clear);        
     }
 
     public void clear()

@@ -1,0 +1,8 @@
+﻿use:
+{
+	String on use test object
+}
+longuse:
+{
+	String on  LOOOOOONG use test object
+}

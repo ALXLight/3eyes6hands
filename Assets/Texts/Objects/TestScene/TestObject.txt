@@ -1,9 +1,0 @@
-﻿0:
-{
-	Zero string
-}
-1:
-{
-	One string
-	Double!!!!
-}

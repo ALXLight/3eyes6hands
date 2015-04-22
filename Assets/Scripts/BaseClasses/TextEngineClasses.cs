@@ -28,7 +28,7 @@ public class ObjectTexts
             parse(fileContent);
         }
         catch (Exception)
-        {     
+        {                 
             return false;
         }
         return true;

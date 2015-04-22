@@ -9,6 +9,8 @@ using UnityEditor;
 public class Global : MonoBehaviour
 {
     public static DialogTexts Dialogs = new DialogTexts();
+    public delegate void WaitForAnyKeyCallback();
+    private static WaitForAnyKeyCallback waitForAnyKeyCallback = null;
     private static bool Pause = false;
     private static bool isWaitingForAnyKey = false;
     private static string CurrentLevel;
@@ -50,7 +52,14 @@ public class Global : MonoBehaviour
         isWaitingForAnyKey = true;
         setGameTimeScale();
     }
+    public static void waitForAnyKey(WaitForAnyKeyCallback callOnAnyKey)
+    {
+        isWaitingForAnyKey = true;
+        waitForAnyKeyCallback = callOnAnyKey;
+        setGameTimeScale();
+    }
 
+  
     public static bool isPaused()  // остановлена ли игра по любой причине
     {       
         return Pause || isWaitingForAnyKey;
@@ -68,8 +77,13 @@ public class Global : MonoBehaviour
             if (Input.anyKeyDown) // если это была не кнопка паузы
             {
 
-                isWaitingForAnyKey = false;
+                isWaitingForAnyKey = false;                
                 setGameTimeScale();
+                if (waitForAnyKeyCallback != null)
+                {
+                    waitForAnyKeyCallback();
+                    waitForAnyKeyCallback = null;
+                }
             }
         }
     }
