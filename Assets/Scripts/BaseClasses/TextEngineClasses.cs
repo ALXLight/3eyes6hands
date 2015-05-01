@@ -59,21 +59,67 @@ public class ObjectTexts
 }
 
 
-public struct DialogPhrase
+public class DialogPhrase
 {
-    public string speaker;
-    public string phrase;
+    public bool left = true;
+    public string speaker = "";
+    public string phrase = "";
 }
 public class DialogTexts
 {
-    private Dictionary<string, List<DialogPhrase>> Dialogues = new Dictionary<string, List<DialogPhrase>>();    
+    private Dictionary<string, List<DialogPhrase>> Dialogs = new Dictionary<string, List<DialogPhrase>>();    
 
     private static Regex idRegExp = new Regex("(?s)([\\w-_]+):.+?\\{(.+?)\\}");
-    private static Regex phraseRegExp = new Regex("(?s)([\\w-_]+):.+?\\[(.+?)\\]");
+    private static Regex phraseRegExp = new Regex("(?s)([<>])([\\w-_@]+):.+?\\[(.+?)\\]");
+    private int currentPhrase = 0;
+    private string currentDialogId = "";
 
-    public string message(string dialogId, int phrase)
-    {   
-        return Dialogues[dialogId][phrase].phrase;
+    // использовать для непоследовательного вывода сообщеий. Позиция не сохраняется
+    public DialogPhrase message(string dialogId, int phrase)
+    {
+        if (!contains(dialogId))
+            return null;
+
+        return Dialogs[dialogId][phrase];
+    }
+
+    // последовательный вывод сообщений диалога. При остутствии или окончании диалога возвращает null
+    public DialogPhrase message(string dialogId)
+    {
+        if (!contains(dialogId))
+            return null;
+
+        if (currentDialogId != dialogId)
+        {
+            currentDialogId = dialogId;
+            currentPhrase = 0;
+        }
+
+       
+        if (currentPhrase < Dialogs[dialogId].Count)
+        {
+            
+            return Dialogs[dialogId][currentPhrase++];
+        }
+        else // окончание диалога
+        {
+            currentPhrase = 0;
+            currentDialogId = "";
+            return null;
+        }        
+    }
+
+    private IEnumerable<DialogPhrase> nextMessage(string dialogId)
+    {
+        for (int i = 0; i < Dialogs[dialogId].Count(); ++i)
+            yield return Dialogs[dialogId][i];
+    }
+
+    public bool contains(string dialogId)
+    {
+        if (Dialogs.ContainsKey(dialogId))
+            return true;        
+        return false;
     }
 
 
@@ -109,7 +155,7 @@ public class DialogTexts
                 string innerBlock = titleMatch.Groups[2].Value.Trim().Replace("\t", String.Empty);
 
                 currentIndex = titleMatch.Index + titleMatch.Length;
-                Dialogues.Add(id, parsePhrase(id, innerBlock) );
+                Dialogs.Add(id, parsePhrase(id, innerBlock) );
             }
             else
             {
@@ -130,16 +176,20 @@ public class DialogTexts
 
             if (titleMatch.Success)
             {
-                string speaker = titleMatch.Groups[1].Value;
-                string phraseText = titleMatch.Groups[2].Value.Trim().Replace("\t", String.Empty);
+                string speaker = titleMatch.Groups[2].Value;
+                string phraseText = titleMatch.Groups[3].Value.Trim().Replace("\t", String.Empty);
 
                 currentIndex = titleMatch.Index + titleMatch.Length;
 
-                DialogPhrase phrase;
-                phrase.speaker = speaker;
-                phrase.phrase = phraseText;
+                DialogPhrase parsedPhrase = new DialogPhrase();
+                parsedPhrase.speaker = speaker;
+                parsedPhrase.phrase = phraseText;
+                if (titleMatch.Groups[1].Value == "<")
+                    parsedPhrase.left = true;
+                else if(titleMatch.Groups[1].Value == ">")
+                    parsedPhrase.left = false;
 
-                phraseDialog.Add(phrase);
+                phraseDialog.Add(parsedPhrase);
             }
             else
             {

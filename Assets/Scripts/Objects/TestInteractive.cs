@@ -17,21 +17,8 @@ public class TestInteractive : InteractiveObject
        
 
 
-        msgDisplay = MessageDisplay.getMessageDisplay("MessageText");
+        msgDisplay = MessageDisplay.getMessageDisplay("MessagePanel");
         //Debug.Log(msgDisplay);
-
-
-        /*
-        otc.addMessage("msg1");
-        otc.addMessage("msg2");
-        otc.addMessage("msg3");
-        otc.addMessage("msg4");
-        otc.addMessage("msg5");*/
-
-
-        // texts["level1"]["testdoc"].addMessage("msg2");
-        //  texts["level1"]["testdoc"].addMessage("msg3");
-
 
     }
 
@@ -57,10 +44,7 @@ public class TestInteractive : InteractiveObject
     {
         //Debug.Log("use");
 
-        //Debug.Log(texts["level1"]["testdoc"].message());
-       // Debug.Log(texts["level1"].message());
-
-        msgDisplay.setTextPaused(objectTexts.message("use"));
+        msgDisplay.setDialog("0");
     }
 
     protected override void onLongUse()

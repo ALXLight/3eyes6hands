@@ -1,15 +1,19 @@
 ﻿0:
 {
-	player:
+	>Player:
 	[
 		пыщь!
 	]
-	anon:
+	<TestObject@check:
 	[
 		воистину пыщь!
 	]
-	player:
+	>Player:
 	[
 		я так и знал!
+	]
+	<TestObject:
+	[
+		ну поздравляю
 	]
 }

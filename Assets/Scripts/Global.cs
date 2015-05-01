@@ -14,11 +14,14 @@ public class Global : MonoBehaviour
     private static bool Pause = false;
     private static bool isWaitingForAnyKey = false;
     private static string CurrentLevel;
-    private static float lastTimeScale = Time.timeScale;
+    private static float lastTimeScale ;
 
 
     private void Awake()
     {
+     //   lastTimeScale = Time.timeScale;
+        
+
         defineCurrentLevelName();
 
         // загружаем диалоги уровня
@@ -76,13 +79,13 @@ public class Global : MonoBehaviour
         {
             if (Input.anyKeyDown) // если это была не кнопка паузы
             {
-
                 isWaitingForAnyKey = false;                
                 setGameTimeScale();
                 if (waitForAnyKeyCallback != null)
                 {
-                    waitForAnyKeyCallback();
+                    WaitForAnyKeyCallback tmpCallback = waitForAnyKeyCallback;
                     waitForAnyKeyCallback = null;
+                    tmpCallback();                    
                 }
             }
         }
@@ -102,7 +105,7 @@ public class Global : MonoBehaviour
         
         if (isPaused()) // если игра должна быть остановлена
         {
-            if (Time.timeScale != 0) // если она ещё не остановлена
+            if (Time.timeScale != 0f) // если она ещё не остановлена
             {
                 lastTimeScale = Time.timeScale;
                 Time.timeScale = 0;
